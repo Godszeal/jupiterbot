@@ -103,9 +103,9 @@ const prefix = global.prefa ? /^[°•π÷×¶∆£¢€¥®™+✓=|~!?@#$%^&.�
 const owner = JSON.parse(fs.readFileSync('./allfunc/owner.json'))
 const Premium = JSON.parse(fs.readFileSync('./allfunc/premium.json'))
 // Ensure body is a string before calling startsWith
-const isCmd = body.startsWith(prefix)
-const command = body.startsWith(prefix) ? body.slice(prefix.length).trim().split(' ').shift().toLowerCase(): ''
-const args = body.trim().split(/ +/).slice(1)
+const isCmd = body && body.startsWith(prefix)
+const command = body && body.startsWith(prefix) ? body.slice(prefix.length).trim().split(' ').shift().toLowerCase(): ''
+const args = body ? body.trim().split(/ +/).slice(1) : []
 const text = args.join(" ")
 const botNumber = await gz.decodeJid(gz.user.id)
 const isCreator = [botNumber, ...owner].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
@@ -115,7 +115,7 @@ const isDev = owner
 const isPremium = [botNumber, ...Premium].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
 const qtext = q = args.join(" ")
 const quoted = m.quoted ? m.quoted : m
-const from = mek.key.remoteJid
+const from_jid = m.key.remoteJid
 const { spawn: spawn, exec } = require('child_process')
 const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
 let groupMetadata = null;
@@ -211,11 +211,11 @@ async function loading() {
     ];
     
     // Send initial message and capture the response
-    let msg = await gz.sendMessage(from, { text: 'ʟᴏᴀᴅɪɴɢ...' });
+    let msg = await gz.sendMessage(m.chat, { text: 'ʟᴏᴀᴅɪɴɢ...' });
     
     // Loop through and edit the same message
     for (let i = 0; i < toki.length; i++) {
-        await gz.sendMessage(from, {
+        await gz.sendMessage(m.chat, {
             text: toki[i],
             edit: msg.key // Use the key from the initial message
         });
@@ -2594,7 +2594,7 @@ case 'aza':
 if (!isCreator) return reply('😈 *Access Denied.*  Only *Master* holds the reins to this power.  🔒 *Your mortal hands are unworthy.*!');
 let userss = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
 let ghosst = userss
-	try {
+        try {
    var ppuser = await gz.profilePictureUrl(ghosst, 'image')
 } catch (err) {
    var ppuser = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png?q=60'
@@ -2635,7 +2635,7 @@ break;
 case 'groupjid':{
           if (!isCreator) return reply('😈 *Access Denied.*  Only *Master* holds the reins to this power.  🔒 *Your mortal hands are unworthy.*!');
         const groupMetadata = m.isGroup ? await gz.groupMetadata(m.chat).catch((e) => {}) : ""
-		const participants = m.isGroup ? await groupMetadata.participants : ""
+                const participants = m.isGroup ? await groupMetadata.participants : ""
     let textt = `_Here is jid address of all users of_\n *- ${groupMetadata.subject}*\n\n`
     for (let mem of participants) {
             textt += `${themeemoji} ${mem.id}\n`
@@ -3448,20 +3448,20 @@ if (!isCreator) return reply("```for My Owner only```.");
       break;
 case 'unblock': case 'unblocked': {
 
-	 if (!isCreator) return reply("```for My Owner only```.");
-		let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-		await gz.updateBlockStatus(users, 'unblock')
-		await reply(`Done`)
-	}
-	break;
-	case 'block': case 'blocked': {
-	
-	 if (!isCreator) return reply("```for Owner only```.");
-		let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-		await gz.updateBlockStatus(users, 'block')
-		await reply(`Done`)
-			}
-	break;
+         if (!isCreator) return reply("```for My Owner only```.");
+                let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+                await gz.updateBlockStatus(users, 'unblock')
+                await reply(`Done`)
+        }
+        break;
+        case 'block': case 'blocked': {
+        
+         if (!isCreator) return reply("```for Owner only```.");
+                let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
+                await gz.updateBlockStatus(users, 'block')
+                await reply(`Done`)
+                        }
+        break;
 case 'tovn': {
   if (!quoted) return reply('Reply to a video or voice message to convert to audio.');
   if (!/video|audio/.test(mime)) return reply('Media type not supported. Please reply to a video or voice note.');
@@ -3645,29 +3645,29 @@ if (!isCreator) return reply(' 😈 *Access Denied.*  Only *Master* holds the re
   const getRandom = (ext) => {
             return `${Math.floor(Math.random() * 10000)}${ext}`
         }
-	let ahuh = args.join(' ').split('|')
-	let satu = ahuh[0] !== '' ? ahuh[0] : `GODSZEAL`
-	let dua = typeof ahuh[1] !== '𝗝𝗨𝗣𝗜𝗧𝗘𝗥 𝗠𝗗' ? ahuh[1] : `𝗝𝗨𝗣𝗜𝗧𝗘𝗥 𝗠𝗗`
-	let { Sticker, createSticker, StickerTypes } = require('wa-sticker-formatter')
-	let media = await gz.downloadAndSaveMediaMessage(quoted)
-	let jancok = new Sticker(media, {
-	pack: satu, // The pack name
-	author: dua, // The author name
-	type: StickerTypes.FULL, // The sticker type
-	categories: ['🥰', '🥳'], // The sticker category
-	id: '12345', // The sticker id
-	quality: 70, // The quality of the output file
-	background: '#FFFFFF00' // The sticker background color (only for full stickers)
-	})
-	let stok = getRandom(".webp")
-	let nono = await jancok.toFile(stok)
-	let nah = fs.readFileSync(nono)
-	await gz.sendMessage(from,{sticker: nah},{quoted: m})
-	await fs.unlinkSync(stok)
-	await fs.unlinkSync(media)
+        let ahuh = args.join(' ').split('|')
+        let satu = ahuh[0] !== '' ? ahuh[0] : `GODSZEAL`
+        let dua = typeof ahuh[1] !== '𝗝𝗨𝗣𝗜𝗧𝗘𝗥 𝗠𝗗' ? ahuh[1] : `𝗝𝗨𝗣𝗜𝗧𝗘𝗥 𝗠𝗗`
+        let { Sticker, createSticker, StickerTypes } = require('wa-sticker-formatter')
+        let media = await gz.downloadAndSaveMediaMessage(quoted)
+        let jancok = new Sticker(media, {
+        pack: satu, // The pack name
+        author: dua, // The author name
+        type: StickerTypes.FULL, // The sticker type
+        categories: ['🥰', '🥳'], // The sticker category
+        id: '12345', // The sticker id
+        quality: 70, // The quality of the output file
+        background: '#FFFFFF00' // The sticker background color (only for full stickers)
+        })
+        let stok = getRandom(".webp")
+        let nono = await jancok.toFile(stok)
+        let nah = fs.readFileSync(nono)
+        await gz.sendMessage(from,{sticker: nah},{quoted: m})
+        await fs.unlinkSync(stok)
+        await fs.unlinkSync(media)
 }
-	break;
-	
+        break;
+        
   case "play": {
 if (!text) return reply(example("past lives"))
 await gz.sendMessage(m.chat, {react: {text: '🦜', key: m.key}})
@@ -3793,7 +3793,7 @@ let users = participants.filter((u) => !areJidsSameUser(u.id, gz.user.id));
 break;
 case 'toimg': {
 if (isban) return reply(' YOUR BANNED FROM ACCESSING THIS BOT NIGGA 🤐🫵');
-	const getRandom = (ext) => {
+        const getRandom = (ext) => {
             return `${Math.floor(Math.random() * 10000)}${ext}`
         }
         if (!m.quoted) return replynano(`_Reply to Any Sticker._`)
@@ -3803,7 +3803,7 @@ if (mime =="imageMessage" || mime =="stickerMessage")
         let media = await gz.downloadAndSaveMediaMessage(m.quoted)
         let name = await getRandom('.png')
         exec(`ffmpeg -i ${media} ${name}`, (err) => {
-        	fs.unlinkSync(media)
+                fs.unlinkSync(media)
             let buffer = fs.readFileSync(name)
             gz.sendMessage(m.chat, { image: buffer }, { quoted: m })      
 fs.unlinkSync(name)
