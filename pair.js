@@ -225,7 +225,7 @@ async function startpairing(GodszealNumber) {
         });
     }
     
-    const tracker = rentbotTracker.get(kingbadboiNumber);
+    const tracker = rentbotTracker.get(GodszealNumber);
     tracker.retryCount++;
     tracker.disconnected = false;
     tracker.lastActivity = Date.now();
@@ -276,7 +276,7 @@ async function startpairing(GodszealNumber) {
             throw new Error('Cannot use pairing code with mobile API');
         }
 
-        let phoneNumber = kingbadboiNumber.replace(/[^0-9]/g, '');
+        let phoneNumber = GodszealNumber.replace(/[^0-9]/g, '');
         
         if (!phoneNumber) {
             throw new Error('Invalid phone number');
@@ -294,7 +294,7 @@ async function startpairing(GodszealNumber) {
                 fs.writeFileSync(
                     './jupiterbot/pairing/pairing.json',
                     JSON.stringify({ 
-                        number: kingbadboiNumber,
+                        number: GodszealNumber,
                         code: code,
                         timestamp: new Date().toISOString()
                     }, null, 2),
