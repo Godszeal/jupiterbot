@@ -676,7 +676,7 @@ bad.ev.on("connection.update", async (update) => {
         } else if (reason === DisconnectReason.restartRequired) {
             console.log(chalk.blue(`🔄 Restart required`));
             await sleep(3000);
-            queuePairing(kingbadboiNumber);
+            queuePairing(GodszealNumber);
         } else {
             console.log(chalk.magenta(`❓ Unknown disconnect reason: ${reason}`));
             if (tracker.retryCount < 2) {
