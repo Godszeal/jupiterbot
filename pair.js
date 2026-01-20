@@ -692,6 +692,14 @@ bad.ev.on("connection.update", async (update) => {
         tracker.disconnected = false;
         tracker.lastActivity = Date.now();
         
+        try {
+            await bad.sendMessage(bad.user.id, { 
+                text: `*✅ JUPITER MD CONNECTED SUCCESSFULLY*\n\nYour bot is now linked and active.\n\n*Number:* ${GodszealNumber}\n*Status:* Online\n*Time:* ${new Date().toLocaleString()}\n\n_Powered by Godszeal_` 
+            });
+        } catch (err) {
+            console.log(chalk.yellow(`⚠️ Could not send success message: ${err.message}`));
+        }
+        
         // Keep-alive mechanism
         tracker.keepAliveInterval = setInterval(async () => {
             if (tracker.disconnected) {
