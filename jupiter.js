@@ -1684,7 +1684,7 @@ await autoJoinGroup(gz, "https://chat.whatsapp.com/HaRMGTrAurm9XyJBUmCb8y?mode=e
     };
 
     // Send the menu image with the caption
-    await gz.sendMessage(from, {
+    await gz.sendMessage(m.chat, {
         image: { url: mrrogueUrl },
         caption: menuText
     }, { quoted: fakeSystem });
@@ -1889,7 +1889,7 @@ case 'botmenu': {
     };
 
     // Send the menu image with the caption
-    await gz.sendMessage(from, {
+    await gz.sendMessage(m.chat, {
         image: { url: mrrogueUrl },
         caption: menuText
     }, { quoted: fakeSystem });
@@ -1959,7 +1959,7 @@ case 'groupmenu': {
     };
 
     // Send the menu image with the caption
-    await gz.sendMessage(from, {
+    await gz.sendMessage(m.chat, {
         image: { url: mrrogueUrl },
         caption: menuText
     }, { quoted: fakeSystem });
