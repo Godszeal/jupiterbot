@@ -117,11 +117,12 @@ const qtext = q = args.join(" ")
 const quoted = m.quoted ? m.quoted : m
 const from_jid = m.key.remoteJid
 const { spawn: spawn, exec } = require('child_process')
+   if (gz.ev && gz.ev.setMaxListeners) gz.ev.setMaxListeners(0);
 const sender = m.isGroup ? (m.key.participant ? m.key.participant : m.participant) : m.key.remoteJid
 let groupMetadata = null;
 if (m.isGroup) {
     try {
-        groupMetadata = await gz.groupMetadata(from);
+        groupMetadata = await gz.groupMetadata(m.chat).catch(() => null);
     } catch (e) {
         console.error("Failed to get group metadata:", e);
     }
@@ -130,7 +131,7 @@ const participants = groupMetadata ? groupMetadata.participants : [];
 const groupAdmins = participants.length > 0 ? getGroupAdmins(participants) : [];
 const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
 const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
-const groupName = m.isGroup ? groupMetadata.subject : "";
+const groupName = m.isGroup ? (groupMetadata ? groupMetadata.subject : "") : "";
 const pushname = m.pushName || "No Name"
 const time = moment(Date.now()).tz('Africa/Lagos').locale('id').format('HH:mm:ss z')
 const mime = (quoted.msg || quoted).mimetype || ''
@@ -1629,7 +1630,7 @@ if (autoread) {
 
 
 /*if (m.message) {
-    console.log(chalk.hex('#3498db')(`message " ${m.message} "  from ${pushname} id ${m.isGroup ? `group ${groupMetadata.subject}` : 'private chat'}`));
+    console.log(chalk.hex('#3498db')(`message " ${m.message} "  from ${pushname} id ${m.isGroup ? `group ${(groupMetadata ? groupMetadata.subject : "")}` : 'private chat'}`));
 }*/
 
 switch(command) {
@@ -2636,7 +2637,7 @@ case 'groupjid':{
           if (!isCreator) return reply('😈 *Access Denied.*  Only *Master* holds the reins to this power.  🔒 *Your mortal hands are unworthy.*!');
         const groupMetadata = m.isGroup ? await gz.groupMetadata(m.chat).catch((e) => {}) : ""
                 const participants = m.isGroup ? await groupMetadata.participants : ""
-    let textt = `_Here is jid address of all users of_\n *- ${groupMetadata.subject}*\n\n`
+    let textt = `_Here is jid address of all users of_\n *- ${(groupMetadata ? groupMetadata.subject : "")}*\n\n`
     for (let mem of participants) {
             textt += `${themeemoji} ${mem.id}\n`
         }
@@ -3821,7 +3822,7 @@ case 'grouplink': {
   if (!isBotAdmins) return reply("``` Bot must be admin```");
 
   let response = await gz.groupInviteCode(m.chat);
-  gz.sendText(m.chat, `https://chat.whatsapp.com/${response}\n\n*🔗 Group Link:* ${groupMetadata.subject}`, m, { detectLink: true });
+  gz.sendText(m.chat, `https://chat.whatsapp.com/${response}\n\n*🔗 Group Link:* ${(groupMetadata ? groupMetadata.subject : "")}`, m, { detectLink: true });
 }
 break;
 
